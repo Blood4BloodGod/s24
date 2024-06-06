@@ -31,6 +31,12 @@ bool Board::addMove(const Move& move) {
     lastPlayer = move.player;
     moveCount++;
 
+    // Check if the game is over after this move
+    std::string gameState = checkGameState();
+    if (gameState.find("Game over:") != std::string::npos) {
+        isValid = false;
+    }
+
     return true;
 }
 
@@ -47,13 +53,26 @@ std::string Board::checkGameState() const {
     if (grid[0][2] != ' ' && grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0])
         return grid[0][2] == 'X' ? "Game over: X wins." : "Game over: O wins.";
 
-    // Check for draw or ongoing game
+    // Check if the game is a draw
+    bool draw = true;
     for (const auto& row : grid)
         for (char cell : row)
             if (cell == ' ')
-                return "Game ongoing.";
+                draw = false;
 
-    return "Game over: Draw.";
+    if (draw) return "Game over: Draw.";
+
+    // Check if no moves have been made
+    if (moveCount == 0) {
+        return "Game in progress: New game.";
+    }
+
+    // Check whose turn it is
+    if (lastPlayer == 'X') {
+        return "Game in progress: O's turn.";
+    } else {
+        return "Game in progress: X's turn.";
+    }
 }
 
 void Board::printBoard() const {

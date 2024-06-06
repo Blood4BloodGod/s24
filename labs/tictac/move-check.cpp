@@ -1,15 +1,19 @@
 #include "Move.h"
 #include <iostream>
 #include <string>
-#include <regex>
 #include <algorithm>
+#include <regex>
 
 int main() {
     std::string line;
     std::getline(std::cin, line);
 
-    // Remove extra spaces and tabs
-    line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
+    // Remove comments and normalize whitespace
+    size_t commentPos = line.find('#');
+    if (commentPos != std::string::npos) {
+        line = line.substr(0, commentPos);
+    }
+    line = std::regex_replace(line, std::regex("^ +| +$|( ) +"), "$1");
 
     try {
         Move move = Move::parseMove(line);
