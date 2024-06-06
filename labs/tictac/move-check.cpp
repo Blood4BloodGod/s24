@@ -1,36 +1,18 @@
-#include "Errors.h"
 #include "Move.h"
-
 #include <iostream>
+#include <string>
 
+int main() {
+    std::string line;
+    std::getline(std::cin, line);
 
-int main(int argc, char** argv) {
-  bool verbose = false;
+    Move move = Move::parseMove(line);
 
-  if(argc == 2 && std::string(argv[1]) == "-v") {
-    verbose = true;
-  }
-
-  if(verbose) {
-    std::cout << "> ";
-  }
-
-  std::string line;
-  std::getline(std::cin, line);
-
-  try {
-    Move move(line);
-    std::cout << move.to_string() << '\n';
-    return 0;
-  }
-  catch(const ParseError& e) {
-    if(verbose) {
-      std::cout << "Parse error: " << e.what() << '\n';
+    if (move.isValid()) {
+        std::cout << move << std::endl;
+        return 0;
+    } else {
+        std::cout << "Parse error." << std::endl;
+        return 1;
     }
-    else {
-      std::cout << "Parse error.\n";
-    }
-
-    return 1;
-  }
 }

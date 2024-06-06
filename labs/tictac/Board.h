@@ -1,9 +1,20 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <vector>
+#include <string>
 #include "Move.h"
 
-// I recommended writing a Board class to manage your game state.
-// Here's some space for the class definition; member functions go in Board.cpp.
+class Board {
+private:
+    std::vector<std::vector<char>> grid;
+    bool isValid;
 
-#endif
+public:
+    Board();
+    bool addMove(const Move& move);
+    std::string checkGameState() const;
+    void printBoard() const;
+};
+
+#endif // BOARD_H
