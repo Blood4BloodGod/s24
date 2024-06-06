@@ -25,7 +25,9 @@ Move Move::parseMove(const std::string& moveStr) {
     int number;
     char player;
     std::string position;
-    if (!(iss >> number >> player >> position)) {
+
+    // Check for exact number of elements
+    if (!(iss >> number >> player >> position) || !(iss.eof())) {
         throw std::invalid_argument("Invalid move format");
     }
 
@@ -33,7 +35,7 @@ Move Move::parseMove(const std::string& moveStr) {
 }
 
 bool Move::isValid() const {
-    static const std::regex moveRegex(R"(^\d+\s+[XO]\s+[ABCabc][123]$)");
+    static const std::regex moveRegex(R"(^\d+ [XO] [ABCabc][123]$)");
     std::string moveStr = std::to_string(moveNumber) + ' ' + player + ' ' + position;
     return std::regex_match(moveStr, moveRegex) && moveNumber > 0;
 }

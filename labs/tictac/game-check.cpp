@@ -2,7 +2,6 @@
 #include "Move.h"
 #include <iostream>
 #include <string>
-#include <algorithm>
 #include <regex>
 
 int main() {
