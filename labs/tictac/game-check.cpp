@@ -16,12 +16,13 @@ int main() {
             if (commentPos != std::string::npos) {
                 line = line.substr(0, commentPos);
             }
-            line = std::regex_replace(line, std::regex("^ +| +$|( ) +"), "$1");
+            line = std::regex_replace(line, std::regex("\\s+"), " ");
+            line = std::regex_replace(line, std::regex("^\\s+|\\s+$"), "");
 
             Move move = Move::parseMove(line);
             if (!move.isValid() || !board.addMove(move)) {
                 std::cout << "Invalid move." << std::endl;
-                return 1;
+                return 2;
             }
         }
 
@@ -30,6 +31,6 @@ int main() {
         return 0;
     } catch (const std::invalid_argument&) {
         std::cout << "Invalid move." << std::endl;
-        return 1;
+        return 2;
     }
 }
