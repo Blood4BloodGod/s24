@@ -35,7 +35,7 @@ Move Move::parseMove(const std::string& moveStr) {
 bool Move::isValid() const {
     static const std::regex moveRegex(R"(^\d+\s+[XO]\s+[ABCabc][123]$)");
     std::string moveStr = std::to_string(moveNumber) + ' ' + player + ' ' + position;
-    return std::regex_match(moveStr, moveRegex);
+    return std::regex_match(moveStr, moveRegex) && moveNumber > 0;
 }
 
 std::ostream& operator<<(std::ostream& os, const Move& move) {
