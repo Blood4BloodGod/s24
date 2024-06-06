@@ -9,6 +9,8 @@ class Board {
 private:
     std::vector<std::vector<char>> grid;
     bool isValid;
+    int moveCount;      // Add this line
+    char lastPlayer;    // Add this line
 
 public:
     Board();

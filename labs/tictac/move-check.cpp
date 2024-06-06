@@ -1,10 +1,15 @@
 #include "Move.h"
 #include <iostream>
 #include <string>
+#include <regex>
+#include <algorithm>
 
 int main() {
     std::string line;
     std::getline(std::cin, line);
+
+    // Remove extra spaces and tabs
+    line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
 
     try {
         Move move = Move::parseMove(line);

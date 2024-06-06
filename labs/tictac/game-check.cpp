@@ -2,6 +2,7 @@
 #include "Move.h"
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 int main() {
     Board board;

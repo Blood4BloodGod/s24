@@ -1,7 +1,8 @@
 #include "Board.h"
 #include <iostream>
+#include <unordered_set>
 
-Board::Board() : grid(3, std::vector<char>(3, ' ')), isValid(true) {}
+Board::Board() : grid(3, std::vector<char>(3, ' ')), isValid(true), moveCount(0), lastPlayer('O') {}
 
 bool Board::addMove(const Move& move) {
     // Convert position to grid coordinates
@@ -9,12 +10,27 @@ bool Board::addMove(const Move& move) {
     int col = move.position[1] - '1';
 
     // Check if position is already occupied or out of bounds
-    if (row < 0 || row >= 3 || col < 0 || col >= 3 || grid[row][col] != ' ') {
+    if (row < 0 || row >= 3 || col < 0 || col >= 3 || grid[row][col] != ' ' || !isValid) {
+        isValid = false;
+        return false;
+    }
+
+    // Ensure players alternate correctly
+    if ((move.player == 'X' && lastPlayer == 'X') || (move.player == 'O' && lastPlayer == 'O')) {
+        isValid = false;
+        return false;
+    }
+
+    // Ensure move numbers are in sequence and start from 1
+    if (move.moveNumber != moveCount + 1) {
         isValid = false;
         return false;
     }
 
     grid[row][col] = move.player;
+    lastPlayer = move.player;
+    moveCount++;
+
     return true;
 }
 
