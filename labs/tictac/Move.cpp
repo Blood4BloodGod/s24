@@ -2,6 +2,7 @@
 #include <sstream>
 #include <regex>
 #include <algorithm>
+#include <cctype>
 
 Move::Move(int number, char player, const std::string& pos)
     : moveNumber(number), player(toupper(player)), position(pos) {
@@ -16,10 +17,9 @@ Move Move::parseMove(const std::string& moveStr) {
         cleanedStr = cleanedStr.substr(0, commentPos);
     }
 
-    // Remove extra whitespace
-    cleanedStr.erase(std::remove_if(cleanedStr.begin(), cleanedStr.end(), ::isspace), cleanedStr.end());
+    // Normalize whitespace
+    cleanedStr = std::regex_replace(cleanedStr, std::regex("^ +| +$|( ) +"), "$1");
 
-    // Extract move number, player, and position
     std::istringstream iss(cleanedStr);
     int number;
     char player;
@@ -30,8 +30,8 @@ Move Move::parseMove(const std::string& moveStr) {
 }
 
 bool Move::isValid() const {
-    static const std::regex moveRegex(R"(^\d+\s*[XO]\s*[ABCabc][123]$)");
-    std::string moveStr = std::to_string(moveNumber) + player + position;
+    static const std::regex moveRegex(R"(^\d+\s+[XO]\s+[ABC][123]$)");
+    std::string moveStr = std::to_string(moveNumber) + ' ' + player + ' ' + position;
     return std::regex_match(moveStr, moveRegex);
 }
 
