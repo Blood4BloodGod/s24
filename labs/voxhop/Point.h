@@ -1,23 +1,24 @@
 #ifndef POINT_H
 #define POINT_H
-#include <sstream>
+
 #include <iostream>
-struct Point {
-    int x, y, z;
 
-    bool operator==(const Point& other) const {
-        return x == other.x && y == other.y && z == other.z;
-    }
+class Point {
+public:
+    double x, y, z;
+    Point() : x(0), y(0), z(0) {}
+    Point(double x, double y, double z) : x(x), y(y), z(z) {}
 
-    bool operator!=(const Point& other) const {
-        return !(*this == other);
-    }
-
+    // Comparison operator for sorting
     bool operator<(const Point& other) const {
         if (x != other.x) return x < other.x;
         if (y != other.y) return y < other.y;
         return z < other.z;
     }
+
+    // Declare input and output stream operators
+    friend std::istream& operator>>(std::istream& stream, Point& point);
+    friend std::ostream& operator<<(std::ostream& stream, const Point& point);
 };
 
-#endif
+#endif // POINT_H
