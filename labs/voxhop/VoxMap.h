@@ -24,4 +24,7 @@ private:
     void addEdge(const Point& a, const Point& b);
 };
 
+// Helper function to print Route
+std::ostream& operator<<(std::ostream& os, const Route& route);
+
 #endif // VOXMAP_H

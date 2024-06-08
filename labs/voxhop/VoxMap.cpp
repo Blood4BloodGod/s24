@@ -84,3 +84,11 @@ double VoxMap::heuristic(const Point& a, const Point& b) const {
 void VoxMap::addEdge(const Point& a, const Point& b) {
     adjacencyList[a].push_back(b);
 }
+
+// Helper function to print Route
+std::ostream& operator<<(std::ostream& os, const Route& route) {
+    for (const auto& point : route) {
+        os << point << ' ';
+    }
+    return os;
+}
