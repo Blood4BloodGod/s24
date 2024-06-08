@@ -1,9 +1,13 @@
 #include "VoxMap.h"
 #include "Errors.h"
 #include <sstream>  // Include this header for istringstream
-
+#include <algorithm>
 void VoxMap::addEdge(const Point& src, const Point& dst) {
     graph[src].push_back(dst);
+}
+
+bool VoxMap::isValidPoint(const Point& p) const {
+    return p.x >= 0 && p.x < width && p.y >= 0 && p.y < depth && p.z >= 0 && p.z < height;
 }
 
 VoxMap::VoxMap(std::istream& stream) {
@@ -50,6 +54,10 @@ VoxMap::VoxMap(std::istream& stream) {
 }
 
 Route VoxMap::route(Point src, Point dst) {
+    if (!isValidPoint(src) || !isValidPoint(dst)) {
+        throw InvalidPoint(src);
+    }
+
     if (graph.find(src) == graph.end() || graph.find(dst) == graph.end()) {
         throw InvalidPoint(src);
     }
