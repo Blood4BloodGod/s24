@@ -1,11 +1,9 @@
 #include "VoxMap.h"
 #include "Errors.h"
-#include <limits>
 #include <queue>
 #include <cmath>
-#include <limits>
 #include <algorithm>
-#include <unordered_map>
+#include <stdexcept>
 
 VoxMap::VoxMap(std::istream& input) {
     Point p;
