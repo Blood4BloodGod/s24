@@ -2,11 +2,13 @@
 #define POINT_H
 
 #include <iostream>
+#include <vector>
 
 class Point {
 public:
-    int x, y, z;
-    Point(int x = 0, int y = 0, int z = 0) : x(x), y(y), z(z) {}
+    double x, y, z;
+
+    Point(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {}
 
     bool operator==(const Point& other) const {
         return x == other.x && y == other.y && z == other.z;
@@ -17,15 +19,28 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Point& point) {
-        os << '(' << point.x << ", " << point.y << ", " << point.z << ')';
+        os << "(" << point.x << ", " << point.y << ", " << point.z << ")";
         return os;
+    }
+
+    friend std::istream& operator>>(std::istream& is, Point& point) {
+        is >> point.x >> point.y >> point.z;
+        return is;
     }
 };
 
 struct PointHasher {
-    std::size_t operator()(const Point& p) const {
-        return std::hash<int>()(p.x) ^ std::hash<int>()(p.y) ^ std::hash<int>()(p.z);
+    std::size_t operator()(const Point& point) const {
+        return std::hash<double>()(point.x) ^ std::hash<double>()(point.y) ^ std::hash<double>()(point.z);
     }
 };
+
+// Overload operator<< for Route (std::vector<Point>)
+inline std::ostream& operator<<(std::ostream& os, const std::vector<Point>& route) {
+    for (const auto& point : route) {
+        os << point << " ";
+    }
+    return os;
+}
 
 #endif // POINT_H
