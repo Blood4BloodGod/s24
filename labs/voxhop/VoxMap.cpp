@@ -16,45 +16,28 @@ double VoxMap::heuristic(const Point& a, const Point& b) const {
     return std::abs(a.x - b.x) + std::abs(a.y - b.y) + std::abs(a.z - b.z);
 }
 
-VoxMap::VoxMap(std::istream& stream) {
-    std::string line;
-    std::getline(stream, line);
-    std::istringstream header(line);  // Correct usage of istringstream
-    header >> width >> depth >> height;
+#include "VoxMap.h"
+#include <istream>
+#include <vector>
+#include <unordered_map>
+#include <queue>
 
-    voxels.resize(height, std::vector<std::vector<bool>>(depth, std::vector<bool>(width, false)));
-
-    for (int h = 0; h < height; ++h) {
-        // Skip empty line between tiers
-        std::getline(stream, line);
-        for (int d = 0; d < depth; ++d) {
-            std::getline(stream, line);
-            for (int w = 0; w < width / 4; ++w) {
-                char hexChar = line[w];
-                int binary = std::stoi(std::string(1, hexChar), nullptr, 16);
-                for (int b = 0; b < 4; ++b) {
-                    bool isFilled = (binary & (1 << (3 - b))) != 0;
-                    int x = w * 4 + b;
-                    voxels[h][d][x] = isFilled;
-
-                    if (!isFilled) {
-                        Point p = {x, d, h};
-                        // Add edges to adjacent empty voxels
-                        if (x > 0 && !voxels[h][d][x - 1]) {
-                            addEdge(p, {x - 1, d, h});
-                            addEdge({x - 1, d, h}, p);
-                        }
-                        if (d > 0 && !voxels[h][d - 1][x]) {
-                            addEdge(p, {x, d - 1, h});
-                            addEdge({x, d - 1, h}, p);
-                        }
-                        if (h > 0 && !voxels[h - 1][d][x]) {
-                            addEdge(p, {x, d, h - 1});
-                            addEdge({x, d, h - 1}, p);
-                        }
-                    }
-                }
-            }
+VoxMap::VoxMap(std::istream& is) {
+    int x, d, h;
+    while (is >> x >> d >> h) {
+        Point p = Point(static_cast<double>(x), static_cast<double>(d), static_cast<double>(h));
+        // Assuming addEdge is a function that accepts Points and adds edges to your graph
+        if (x > 0) {
+            addEdge(p, Point(static_cast<double>(x - 1), static_cast<double>(d), static_cast<double>(h)));
+            addEdge(Point(static_cast<double>(x - 1), static_cast<double>(d), static_cast<double>(h)), p);
+        }
+        if (d > 0) {
+            addEdge(p, Point(static_cast<double>(x), static_cast<double>(d - 1), static_cast<double>(h)));
+            addEdge(Point(static_cast<double>(x), static_cast<double>(d - 1), static_cast<double>(h)), p);
+        }
+        if (h > 0) {
+            addEdge(p, Point(static_cast<double>(x), static_cast<double>(d), static_cast<double>(h - 1)));
+            addEdge(Point(static_cast<double>(x), static_cast<double>(d), static_cast<double>(h - 1)), p);
         }
     }
 }
