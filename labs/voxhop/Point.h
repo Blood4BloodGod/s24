@@ -12,6 +12,10 @@ public:
         return x == other.x && y == other.y && z == other.z;
     }
 
+    bool operator!=(const Point& other) const {
+        return !(*this == other);
+    }
+
     friend std::ostream& operator<<(std::ostream& os, const Point& point) {
         os << '(' << point.x << ", " << point.y << ", " << point.z << ')';
         return os;
