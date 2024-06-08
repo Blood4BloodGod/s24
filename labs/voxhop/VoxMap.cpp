@@ -3,9 +3,10 @@
 #include <cmath>
 #include <limits>
 #include <algorithm>
+#include <unordered_map>
 
 bool VoxMap::isValidPoint(const Point& p) const {
-    return p.x >= 0 && p.x < width && p.y >= 0 && p.y < depth && p.z >= 0 && p.z < height;
+    return p.x >= 0 && p.x < width && p.y >= 0 && p.y < depth && p.z >= 0 && p.z < height && voxels[p.x][p.y][p.z];
 }
 
 VoxMap::VoxMap(std::istream& input) {
@@ -39,6 +40,10 @@ VoxMap::VoxMap(std::istream& input) {
 }
 
 Route VoxMap::route(Point src, Point dst) {
+    if (!isValidPoint(src) || !isValidPoint(dst)) {
+        return Route(); // Return an empty route if the source or destination is invalid
+    }
+
     std::unordered_map<Point, Point, PointHasher> cameFrom;
     std::unordered_map<Point, double, PointHasher> costSoFar;
     auto compare = [](const std::pair<double, Point>& a, const std::pair<double, Point>& b) { return a.first > b.first; };
