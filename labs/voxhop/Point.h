@@ -32,4 +32,11 @@ public:
     friend std::ostream& operator<<(std::ostream& stream, const Point& point);
 };
 
+// Hash function for Point
+struct PointHasher {
+    std::size_t operator()(const Point& p) const {
+        return std::hash<double>()(p.x) ^ std::hash<double>()(p.y) ^ std::hash<double>()(p.z);
+    }
+};
+
 #endif // POINT_H
