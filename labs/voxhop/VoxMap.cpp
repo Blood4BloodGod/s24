@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 bool VoxMap::isValidPoint(const Point& p) const {
-    return p.x >= 0 && p.x < width && p.y >= 0 && p.z >= 0 && p.z < height && voxels[p.x][p.y][p.z];
+    return p.x >= 0 && p.x < width && p.y >= 0 && p.y < depth && p.z >= 0 && p.z < height && voxels[p.x][p.y][p.z];
 }
 
 VoxMap::VoxMap(std::istream& input) {
@@ -20,7 +20,6 @@ VoxMap::VoxMap(std::istream& input) {
                 voxels[x][y][z] = (voxel == '1');
                 if (voxels[x][y][z]) {
                     Point p(x, y, z);
-                    points.push_back(p);
                     if (x > 0 && voxels[x - 1][y][z]) {
                         addEdge(p, Point(x - 1, y, z));
                         addEdge(Point(x - 1, y, z), p);
@@ -41,6 +40,7 @@ VoxMap::VoxMap(std::istream& input) {
 
 Route VoxMap::route(Point src, Point dst) {
     if (!isValidPoint(src) || !isValidPoint(dst)) {
+        std::cout << "Invalid point: " << src << " or " << dst << "\n";
         return Route(); // Return an empty route if the source or destination is invalid
     }
 
@@ -71,6 +71,7 @@ Route VoxMap::route(Point src, Point dst) {
 
     Route path;
     if (cameFrom.find(dst) == cameFrom.end()) {
+        std::cout << "No route from " << src << " to " << dst << "\n";
         return path; // No route found
     }
 
