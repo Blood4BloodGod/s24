@@ -1,13 +1,19 @@
 #include "VoxMap.h"
 #include "Errors.h"
-#include <sstream>  // Include this header for istringstream
-#include <algorithm>
+#include <sstream>   // Include this header for istringstream
+#include <algorithm> // Include this header for std::reverse
+#include <cmath>     // Include for std::abs
+
 void VoxMap::addEdge(const Point& src, const Point& dst) {
     graph[src].push_back(dst);
 }
 
 bool VoxMap::isValidPoint(const Point& p) const {
     return p.x >= 0 && p.x < width && p.y >= 0 && p.y < depth && p.z >= 0 && p.z < height;
+}
+
+double VoxMap::heuristic(const Point& a, const Point& b) const {
+    return std::abs(a.x - b.x) + std::abs(a.y - b.y) + std::abs(a.z - b.z);
 }
 
 VoxMap::VoxMap(std::istream& stream) {
@@ -62,14 +68,16 @@ Route VoxMap::route(Point src, Point dst) {
         throw InvalidPoint(src);
     }
 
-    std::unordered_map<Point, Point, PointHasher> came_from;
-    std::queue<Point> frontier;
-    frontier.push(src);
+    std::priority_queue<std::pair<double, Point>, std::vector<std::pair<double, Point>>, std::greater<std::pair<double, Point>>> frontier;
+    frontier.emplace(0, src);
 
+    std::unordered_map<Point, Point, PointHasher> came_from;
+    std::unordered_map<Point, double, PointHasher> cost_so_far;
     came_from[src] = src;
+    cost_so_far[src] = 0;
 
     while (!frontier.empty()) {
-        Point current = frontier.front();
+        Point current = frontier.top().second;
         frontier.pop();
 
         if (current == dst) {
@@ -90,8 +98,11 @@ Route VoxMap::route(Point src, Point dst) {
         }
 
         for (const Point& next : graph[current]) {
-            if (came_from.find(next) == came_from.end()) {
-                frontier.push(next);
+            double new_cost = cost_so_far[current] + 1; // Assuming each move has a cost of 1
+            if (cost_so_far.find(next) == cost_so_far.end() || new_cost < cost_so_far[next]) {
+                cost_so_far[next] = new_cost;
+                double priority = new_cost + heuristic(next, dst);
+                frontier.emplace(priority, next);
                 came_from[next] = current;
             }
         }

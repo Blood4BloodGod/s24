@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
+#include <functional>
 #include "Point.h"
 #include "Route.h"
 #include "Errors.h"
@@ -23,6 +24,7 @@ class VoxMap {
 
     void addEdge(const Point& src, const Point& dst);
     bool isValidPoint(const Point& p) const;
+    double heuristic(const Point& a, const Point& b) const;
 
 public:
     VoxMap(std::istream& stream);
