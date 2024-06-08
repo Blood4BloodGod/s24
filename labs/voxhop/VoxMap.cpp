@@ -4,6 +4,7 @@
 #include <limits>
 #include <algorithm>
 #include <unordered_map>
+#include <iostream>
 
 bool VoxMap::isValidPoint(const Point& p) const {
     return p.x >= 0 && p.x < width && p.y >= 0 && p.y < depth && p.z >= 0 && p.z < height && voxels[p.x][p.y][p.z];
@@ -40,8 +41,13 @@ VoxMap::VoxMap(std::istream& input) {
 }
 
 Route VoxMap::route(Point src, Point dst) {
-    if (!isValidPoint(src) || !isValidPoint(dst)) {
-        return Route(); // Return an empty route if the source or destination is invalid
+    if (!isValidPoint(src)) {
+        std::cout << "Invalid point: " << src << std::endl;
+        return Route(); // Return an empty route if the source is invalid
+    }
+    if (!isValidPoint(dst)) {
+        std::cout << "Invalid point: " << dst << std::endl;
+        return Route(); // Return an empty route if the destination is invalid
     }
 
     std::unordered_map<Point, Point, PointHasher> cameFrom;
@@ -70,7 +76,10 @@ Route VoxMap::route(Point src, Point dst) {
     }
 
     Route path;
-    if (cameFrom.find(dst) == cameFrom.end()) return path; // No route found
+    if (cameFrom.find(dst) == cameFrom.end()) {
+        std::cout << "No route from " << src << " to " << dst << "." << std::endl;
+        return path; // No route found
+    }
 
     Point current = dst;
     while (current != src) {
