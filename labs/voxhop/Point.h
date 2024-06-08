@@ -4,12 +4,15 @@
 #include <iostream>
 
 struct Point {
-  int x;
-  int y;
-  int z;
+    int x, y, z;
 
-  Point() {}
-  Point(int x, int y, int z): x(x), y(y), z(z) {}
+    bool operator==(const Point& other) const {
+        return x == other.x && y == other.y && z == other.z;
+    }
+
+    bool operator!=(const Point& other) const {
+        return !(*this == other);
+    }
 };
 
 std::istream& operator >> (std::istream& stream, Point& point);
