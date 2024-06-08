@@ -1,8 +1,7 @@
 #ifndef POINT_H
 #define POINT_H
-
+#include <sstream>
 #include <iostream>
-
 struct Point {
     int x, y, z;
 
@@ -13,9 +12,12 @@ struct Point {
     bool operator!=(const Point& other) const {
         return !(*this == other);
     }
-};
 
-std::istream& operator >> (std::istream& stream, Point& point);
-std::ostream& operator << (std::ostream& stream, const Point& point);
+    bool operator<(const Point& other) const {
+        if (x != other.x) return x < other.x;
+        if (y != other.y) return y < other.y;
+        return z < other.z;
+    }
+};
 
 #endif
