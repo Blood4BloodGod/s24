@@ -14,6 +14,8 @@ public:
 
     static Move parseMove(const std::string& moveStr);
     bool isValid() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Move& move);
 };
 
 #endif

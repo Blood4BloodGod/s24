@@ -42,3 +42,8 @@ bool Move::isValid() const {
     if (position[1] < '1' || position[1] > '3') return false;
     return true;
 }
+
+std::ostream& operator<<(std::ostream& os, const Move& move) {
+    os << move.moveNumber << " " << move.player << " " << move.position;
+    return os;
+}
