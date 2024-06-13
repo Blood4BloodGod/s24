@@ -2,13 +2,16 @@
 #define POINT_H
 
 #include <iostream>
-#include <vector>
 
 class Point {
 public:
     double x, y, z;
 
-    Point(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {}
+    // Default constructor
+    Point() : x(0), y(0), z(0) {}
+
+    // Parameterized constructor
+    Point(double x, double y, double z) : x(x), y(y), z(z) {}
 
     bool operator==(const Point& other) const {
         return x == other.x && y == other.y && z == other.z;
@@ -18,29 +21,23 @@ public:
         return !(*this == other);
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const Point& point) {
-        os << "(" << point.x << ", " << point.y << ", " << point.z << ")";
-        return os;
+    bool operator<(const Point& other) const {
+        if (x != other.x) return x < other.x;
+        if (y != other.y) return y < other.y;
+        return z < other.z;
     }
 
-    friend std::istream& operator>>(std::istream& is, Point& point) {
-        is >> point.x >> point.y >> point.z;
-        return is;
-    }
+    // Declare the stream operators
+    friend std::istream& operator>>(std::istream& stream, Point& point);
+    friend std::ostream& operator<<(std::ostream& stream, const Point& point);
 };
 
+// Hash function for Point
 struct PointHasher {
-    std::size_t operator()(const Point& point) const {
-        return std::hash<double>()(point.x) ^ std::hash<double>()(point.y) ^ std::hash<double>()(point.z);
+    std::size_t operator()(const Point& p) const {
+        return std::hash<double>()(p.x) ^ std::hash<double>()(p.y) ^ std::hash<double>()(p.z);
     }
 };
-
-// Overload operator<< for Route (std::vector<Point>)
-inline std::ostream& operator<<(std::ostream& os, const std::vector<Point>& route) {
-    for (const auto& point : route) {
-        os << point << " ";
-    }
-    return os;
-}
 
 #endif // POINT_H
+
