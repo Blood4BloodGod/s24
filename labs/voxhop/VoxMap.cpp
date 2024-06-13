@@ -8,6 +8,10 @@
 VoxMap::VoxMap(std::istream& stream) {
     std::string line;
     std::getline(stream, line);
+    if (stream.fail()) {
+        throw std::runtime_error("Error reading the header line");
+    }
+
     std::istringstream header(line);
     header >> width >> depth >> height;
 
@@ -20,14 +24,29 @@ VoxMap::VoxMap(std::istream& stream) {
     for (int h = 0; h < height; ++h) {
         // Skip empty line between tiers
         std::getline(stream, line);
+        if (stream.fail()) {
+            throw std::runtime_error("Error reading empty line between tiers");
+        }
+
         for (int d = 0; d < depth; ++d) {
             std::getline(stream, line);
+            if (stream.fail()) {
+                throw std::runtime_error("Error reading voxel data line");
+            }
+
             if (line.length() != static_cast<size_t>(width / 4)) {
                 throw std::runtime_error("Invalid line length for voxel data");
             }
+
             for (int w = 0; w < width / 4; ++w) {
                 char hexChar = line[w];
-                int binary = std::stoi(std::string(1, hexChar), nullptr, 16);
+                int binary;
+                try {
+                    binary = std::stoi(std::string(1, hexChar), nullptr, 16);
+                } catch (const std::invalid_argument&) {
+                    throw std::runtime_error("Invalid hex character in voxel data");
+                }
+
                 for (int b = 0; b < 4; ++b) {
                     bool isFilled = (binary & (1 << (3 - b))) != 0;
                     int x = w * 4 + b;
