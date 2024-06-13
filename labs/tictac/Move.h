@@ -8,13 +8,17 @@ class Move {
 public:
     int moveNumber;
     char player;
-    std::string position;
+    char row;
+    int column;
+    std::string comment;
 
-    Move(int number, char player, const std::string& pos);
-    static Move parseMove(const std::string& moveStr);
-    bool isValid() const;
+    Move();
+    Move(int moveNumber, char player, char row, int column, std::string comment = "");
 
+    friend std::istream& operator>>(std::istream& is, Move& move);
     friend std::ostream& operator<<(std::ostream& os, const Move& move);
+
+    bool isValid() const;
 };
 
-#endif // MOVE_H
+#endif
