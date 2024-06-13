@@ -27,8 +27,19 @@ Move Move::parseMove(const std::string& moveStr) {
     std::string position;
 
     // Check for exact number of components
-    if (!(iss >> number >> player >> position)) {
+    if (!(iss >> number >> player >> position) || !iss.eof()) {
         throw std::invalid_argument("Invalid move format");
+    }
+
+    // Additional checks for invalid components
+    if (number < 1 || number > 9) {
+        throw std::invalid_argument("Invalid move number");
+    }
+    if (player != 'X' && player != 'O') {
+        throw std::invalid_argument("Invalid player");
+    }
+    if (position.size() != 2 || position[0] < 'A' || position[0] > 'C' || position[1] < '1' || position[1] > '3') {
+        throw std::invalid_argument("Invalid position");
     }
 
     return Move(number, player, position);

@@ -1,11 +1,17 @@
+#include "Board.h"
 #include "Move.h"
 #include <iostream>
 #include <string>
 #include <regex>
 
 int main() {
+    Board board;
     std::string line;
+
     try {
+        int expectedMoveNumber = 1;
+        char currentPlayer = 'X';
+
         while (std::getline(std::cin, line)) {
             // Remove comments and normalize whitespace
             size_t commentPos = line.find('#');
@@ -16,16 +22,20 @@ int main() {
             line = std::regex_replace(line, std::regex("^\\s+|\\s+$"), "");
 
             Move move = Move::parseMove(line);
-            if (!move.isValid()) {
-                std::cout << "Parse error." << std::endl;
-                return 1;
+            if (!move.isValid() || move.moveNumber != expectedMoveNumber || move.player != currentPlayer || !board.addMove(move)) {
+                std::cout << "Invalid move." << std::endl;
+                return 2;
             }
 
-            std::cout << move << std::endl;
+            expectedMoveNumber++;
+            currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
         }
+
+        std::string result = board.checkGameState();
+        std::cout << result << std::endl;
         return 0;
     } catch (const std::invalid_argument&) {
-        std::cout << "Parse error." << std::endl;
-        return 1;
+        std::cout << "Invalid move." << std::endl;
+        return 2;
     }
 }

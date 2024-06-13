@@ -1,9 +1,11 @@
 #include "Board.h"
 #include <iostream>
 
-Board::Board() : grid(3, std::vector<char>(3, ' ')), isValid(true), moveCount(0), lastPlayer(' ') {}
+Board::Board() : grid(3, std::vector<char>(3, ' ')), isValid(true), moveCount(0), lastPlayer(' '), gameEnded(false) {}
 
 bool Board::addMove(const Move& move) {
+    if (gameEnded) return false; // Reject moves after game has ended
+
     int row = move.position[0] - 'A';
     int col = move.position[1] - '1';
 
@@ -12,6 +14,12 @@ bool Board::addMove(const Move& move) {
     grid[row][col] = move.player;
     moveCount++;
     lastPlayer = move.player;
+
+    // Check if this move ends the game
+    if (checkGameState().find("Game over") != std::string::npos) {
+        gameEnded = true;
+    }
+
     return true;
 }
 

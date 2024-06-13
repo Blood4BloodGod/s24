@@ -11,6 +11,7 @@ private:
     bool isValid;
     int moveCount;
     char lastPlayer;
+    bool gameEnded; // Add this flag
 
 public:
     Board();
