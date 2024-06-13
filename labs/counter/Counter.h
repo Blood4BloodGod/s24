@@ -1,47 +1,39 @@
-#ifndef COUNTER_H
-#define COUNTER_H
-
-#include <cstddef>
+#pragma once
 #include <string>
-
-// This is the Counter class you need to implement.
-// It includes the Counter::Iterator as a nested class.
+#include "List.h"
+#include "Index.h"
 
 class Counter {
 public:
-  class Iterator {
-    // Member Variables
+    Counter();
+    ~Counter();
 
-  public:
-    const std::string& key() const;
-    int value() const;
+    int get(const std::string& key) const;
+    void set(const std::string& key, int value);
+    void inc(const std::string& key, int delta = 1);
+    void dec(const std::string& key, int delta = 1);
+    void del(const std::string& key);
+    int count() const;
+    int total() const;
 
-    void operator ++ ();
-    bool operator == (const Iterator& other) const;
-    bool operator != (const Iterator& other) const;
-  };
+    class Iterator {
+    public:
+        Iterator(ListNode* node);
+
+        bool operator!=(const Iterator& other) const;
+        Iterator& operator++();
+        std::string key() const;
+        int value() const;
+
+    private:
+        ListNode* current;
+    };
+
+    Iterator begin() const;
+    Iterator end() const;
 
 private:
-  // Member Variables
-
-private:
-  // Helper Functions
-
-public:
-  Counter();
-  ~Counter();
-
-  size_t count() const;
-  int    total() const;
-
-  void inc(const std::string& key, int by = 1);
-  void dec(const std::string& key, int by = 1);
-  void del(const std::string& key);
-  int  get(const std::string& key) const;
-  void set(const std::string& key, int count);
-
-  Iterator begin() const;
-  Iterator end() const;
+    List list;
+    Index index;
 };
 
-#endif
