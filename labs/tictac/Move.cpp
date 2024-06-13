@@ -21,6 +21,12 @@ Move Move::parseMove(const std::string& moveStr) {
     cleanedStr = std::regex_replace(cleanedStr, std::regex("\\s+"), " ");
     cleanedStr = std::regex_replace(cleanedStr, std::regex("^\\s+|\\s+$"), "");
 
+    // Check for missing components or extra spaces
+    int spaceCount = std::count(cleanedStr.begin(), cleanedStr.end(), ' ');
+    if (spaceCount != 2) {
+        throw std::invalid_argument("Invalid move format");
+    }
+
     std::istringstream iss(cleanedStr);
     int number;
     char player;
