@@ -15,9 +15,6 @@ Move Move::parseMove(const std::string& moveStr) {
     size_t commentPos = cleanedStr.find('#');
     if (commentPos != std::string::npos) {
         cleanedStr = cleanedStr.substr(0, commentPos);
-        if (cleanedStr.find('#') != std::string::npos) {
-            throw std::invalid_argument("Invalid comment format");
-        }
     }
 
     // Normalize whitespace
