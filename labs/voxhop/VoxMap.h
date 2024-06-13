@@ -1,30 +1,26 @@
 #ifndef VOXMAP_H
 #define VOXMAP_H
 
-#include "Point.h"
 #include <vector>
-#include <unordered_map>
-#include <istream>
-
-using Route = std::vector<Point>; // Define Route as a vector of Point
+#include <map>
+#include "Point.h"
+#include "Route.h"
 
 class VoxMap {
 public:
     VoxMap(std::istream& input);
     Route route(Point src, Point dst);
+    bool isValidPoint(const Point& p) const;
 
 private:
     int width, depth, height;
     std::vector<std::vector<std::vector<bool>>> voxels;
+    std::map<Point, std::vector<Point>> adjacencyList;
     std::vector<Point> points;
-    std::unordered_map<Point, std::vector<Point>, PointHasher> adjacencyList;
 
-    bool isValidPoint(const Point& p) const;
     double heuristic(const Point& a, const Point& b) const;
     void addEdge(const Point& a, const Point& b);
+    bool isFilledVoxel(char c, int index) const;
 };
 
-std::ostream& operator<<(std::ostream& os, const Route& route);
-
-#endif 
-
+#endif // VOXMAP_H

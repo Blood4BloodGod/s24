@@ -1,21 +1,22 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "Move.h"
 #include <vector>
 #include <string>
+#include "Move.h"
 
 class Board {
+private:
+    std::vector<std::vector<char>> grid;
+    bool isValid;
+    int moveCount;
+    char lastPlayer;
+
 public:
     Board();
-    bool applyMove(const Move& move);
-    std::string evaluate() const;
-
-private:
-    std::vector<std::vector<char>> board;
-    int moveCount;
-    bool isWin(char player) const;
-    bool isFull() const;
+    bool addMove(const Move& move);
+    std::string checkGameState() const;
+    void printBoard() const;
 };
 
-#endif
+#endif // BOARD_H

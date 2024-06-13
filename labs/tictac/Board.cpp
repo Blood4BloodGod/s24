@@ -1,36 +1,56 @@
 #include "Board.h"
 #include <iostream>
 
-Board::Board() : board(3, std::vector<char>(3, ' ')), moveCount(0) {}
+Board::Board() : grid(3, std::vector<char>(3, ' ')), isValid(true), moveCount(0), lastPlayer(' ') {}
 
-bool Board::applyMove(const Move& move) {
-    int row = move.row - 'A';
-    int col = move.column - 1;
+bool Board::addMove(const Move& move) {
+    int row = move.position[0] - 'A';
+    int col = move.position[1] - '1';
 
-    if (board[row][col] != ' ') return false;
+    if (grid[row][col] != ' ') return false;
 
-    board[row][col] = move.player;
+    grid[row][col] = move.player;
     moveCount++;
+    lastPlayer = move.player;
     return true;
 }
 
-std::string Board::evaluate() const {
-    if (isWin('X')) return "Game over: X wins.";
-    if (isWin('O')) return "Game over: O wins.";
-    if (isFull()) return "Game over: Draw.";
-    return "Game in progress.";
-}
-
-bool Board::isWin(char player) const {
-    for (int i = 0; i < 3; i++) {
-        if (board[i][0] == player && board[i][1] == player && board[i][2] == player) return true;
-        if (board[0][i] == player && board[1][i] == player && board[2][i] == player) return true;
+std::string Board::checkGameState() const {
+    for (int i = 0; i < 3; ++i) {
+        if (grid[i][0] != ' ' && grid[i][0] == grid[i][1] && grid[i][1] == grid[i][2])
+            return grid[i][0] == 'X' ? "Game over: X wins." : "Game over: O wins.";
+        if (grid[0][i] != ' ' && grid[0][i] == grid[1][i] && grid[1][i] == grid[2][i])
+            return grid[0][i] == 'X' ? "Game over: X wins." : "Game over: O wins.";
     }
-    if (board[0][0] == player && board[1][1] == player && board[2][2] == player) return true;
-    if (board[0][2] == player && board[1][1] == player && board[2][0] == player) return true;
-    return false;
+    if (grid[0][0] != ' ' && grid[0][0] == grid[1][1] && grid[1][1] == grid[2][2])
+        return grid[0][0] == 'X' ? "Game over: X wins." : "Game over: O wins.";
+    if (grid[0][2] != ' ' && grid[0][2] == grid[1][1] && grid[1][1] == grid[2][0])
+        return grid[0][2] == 'X' ? "Game over: X wins." : "Game over: O wins.";
+
+    bool draw = true;
+    for (const auto& row : grid)
+        for (char cell : row)
+            if (cell == ' ')
+                draw = false;
+
+    if (draw) return "Game over: Draw.";
+
+    if (moveCount == 0) {
+        return "Game in progress: New game.";
+    }
+
+    if (lastPlayer == 'X') {
+        return "Game in progress: O's turn.";
+    } else {
+        return "Game in progress: X's turn.";
+    }
 }
 
-bool Board::isFull() const {
-    return moveCount == 9;
+void Board::printBoard() const {
+    for (const auto& row : grid) {
+        for (char cell : row) {
+            std::cout << (cell == ' ' ? '.' : cell) << ' ';
+        }
+        std::cout << '\n';
+    }
 }

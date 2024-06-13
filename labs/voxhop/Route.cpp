@@ -16,12 +16,6 @@ std::ostream& operator << (std::ostream& stream, Move move) {
   case Move::WEST:
     c = 'w';
     break;
-  case Move::UP:
-    c = 'u';
-    break;
-  case Move::DOWN:
-    c = 'd';
-    break;
   default:
     c = '?';
   }
