@@ -41,6 +41,7 @@ VoxMap::VoxMap(std::istream& input) {
 
 Route VoxMap::route(Point src, Point dst) {
     if (!isValidPoint(src) || !isValidPoint(dst)) {
+        std::cout<<"no route";
         return Route(); // Return an empty route if the source or destination is invalid
     }
 
