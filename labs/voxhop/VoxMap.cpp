@@ -9,35 +9,50 @@ bool VoxMap::isValidPoint(const Point& p) const {
     return p.x >= 0 && p.x < width && p.y >= 0 && p.y < depth && p.z >= 0 && p.z < height && voxels[p.x][p.y][p.z];
 }
 
+
 VoxMap::VoxMap(std::istream& input) {
+    // Check if the input stream is valid
+    if (!input) {
+        throw std::runtime_error("Invalid input stream");
+    }
+
+    // Read dimensions
     input >> width >> depth >> height;
+    if (input.fail() || width <= 0 || depth <= 0 || height <= 0) {
+        throw std::runtime_error("Invalid dimensions in input");
+    }
+
+    // Initialize voxel grid
     voxels = std::vector<std::vector<std::vector<bool>>>(width, std::vector<std::vector<bool>>(depth, std::vector<bool>(height, false)));
+
+    // Read voxel data
     for (int z = 0; z < height; ++z) {
         for (int y = 0; y < depth; ++y) {
             for (int x = 0; x < width; ++x) {
                 char voxel;
                 input >> voxel;
+                if (input.fail()) {
+                    throw std::runtime_error("Error reading voxel data");
+                }
                 voxels[x][y][z] = (voxel == '1');
                 if (voxels[x][y][z]) {
                     Point p(x, y, z);
                     points.push_back(p);
                     if (x > 0 && voxels[x - 1][y][z]) {
                         addEdge(p, Point(x - 1, y, z));
-                        addEdge(Point(x - 1, y, z), p);
                     }
                     if (y > 0 && voxels[x][y - 1][z]) {
                         addEdge(p, Point(x, y - 1, z));
-                        addEdge(Point(x, y - 1, z), p);
                     }
                     if (z > 0 && voxels[x][y][z - 1]) {
                         addEdge(p, Point(x, y, z - 1));
-                        addEdge(Point(x, y, z - 1), p);
                     }
                 }
             }
         }
     }
 }
+
 
 Route VoxMap::route(Point src, Point dst) {
     if (!isValidPoint(src) || !isValidPoint(dst)) {
