@@ -8,13 +8,12 @@ public:
     Counter();
     ~Counter();
 
-    int get(const std::string& key) const;
-    void set(const std::string& key, int value);
-    void inc(const std::string& key, int delta = 1);
-    void dec(const std::string& key, int delta = 1);
+    bool get(const std::string& key) const;
+    void set(const std::string& key, bool value);
+    void inc(const std::string& key);
+    void dec(const std::string& key);
     void del(const std::string& key);
     int count() const;
-    int total() const;
 
     class Iterator {
     public:
@@ -23,7 +22,7 @@ public:
         bool operator!=(const Iterator& other) const;
         Iterator& operator++();
         std::string key() const;
-        int value() const;
+        bool value() const;
 
     private:
         ListNode* current;

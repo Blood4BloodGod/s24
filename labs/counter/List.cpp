@@ -1,6 +1,6 @@
 #include "List.h"
 
-List::List() : head(nullptr), tail(nullptr), count(0), totalCount(0) {}
+List::List() : head(nullptr), tail(nullptr), count(0) {}
 
 List::~List() {
     ListNode* current = head;
@@ -11,7 +11,7 @@ List::~List() {
     }
 }
 
-void List::add(const std::string& key, int value) {
+void List::add(const std::string& key, bool value) {
     ListNode* newNode = new ListNode(key, value);
     if (tail) {
         tail->next = newNode;
@@ -21,15 +21,12 @@ void List::add(const std::string& key, int value) {
         head = tail = newNode;
     }
     count++;
-    totalCount += value;
 }
 
-void List::update(const std::string& key, int value) {
+void List::update(const std::string& key, bool value) {
     ListNode* node = getNode(key);
     if (node) {
-        totalCount -= node->value;
         node->value = value;
-        totalCount += value;
     }
 }
 
@@ -46,7 +43,6 @@ void List::remove(const std::string& key) {
         } else {
             tail = node->prev;
         }
-        totalCount -= node->value;
         delete node;
         count--;
     }
@@ -65,10 +61,6 @@ ListNode* List::getNode(const std::string& key) const {
 
 int List::size() const {
     return count;
-}
-
-int List::total() const {
-    return totalCount;
 }
 
 ListNode* List::begin() const {

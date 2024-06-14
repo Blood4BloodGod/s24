@@ -17,6 +17,6 @@ std::string Counter::Iterator::key() const {
     return current ? current->key : "";
 }
 
-int Counter::Iterator::value() const {
-    return current ? current->value : 0;
+bool Counter::Iterator::value() const {
+    return current ? current->value : false;
 }

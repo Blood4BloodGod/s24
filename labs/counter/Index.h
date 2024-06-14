@@ -10,10 +10,7 @@ public:
     void add(const std::string& key, ListNode* node);
     void remove(const std::string& key);
     bool contains(const std::string& key) const;
-    int get(const std::string& key) const;
     ListNode* getNode(const std::string& key) const;
-
-    void printDistribution() const;  // Debugging function
 
 private:
     static const int TABLE_SIZE = 8192;

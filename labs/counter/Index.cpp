@@ -1,6 +1,5 @@
 #include "Index.h"
 #include <cstring>
-#include <iostream>
 
 // FNV-1a Hash function
 uint32_t fnv1a_hash(const std::string& key) {
@@ -72,18 +71,6 @@ bool Index::contains(const std::string& key) const {
         node = node->next;
     }
     return false;
-}
-
-int Index::get(const std::string& key) const {
-    int index = hash(key);
-    HashNode* node = table[index];
-    while (node) {
-        if (node->key == key) {
-            return node->node->value;
-        }
-        node = node->next;
-    }
-    return 0;
 }
 
 ListNode* Index::getNode(const std::string& key) const {
