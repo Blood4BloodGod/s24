@@ -1,24 +1,15 @@
 #include "Counter.h"
 
-Counter::Counter() : list(), index() {
-    // Constructor
-}
+Counter::Counter() : list(), index() {}
 
-Counter::~Counter() {
-    // Destructor
-}
+Counter::~Counter() {}
 
 int Counter::get(const std::string& key) const {
-    ListNode* node = index.getNode(key);
-    if (node) {
-        return node->value;
-    }
-    return 0; // Key not found
+    return index.get(key);
 }
 
 void Counter::set(const std::string& key, int value) {
-    ListNode* node = index.getNode(key);
-    if (node) {
+    if (index.contains(key)) {
         list.update(key, value);
     } else {
         list.add(key, value);
@@ -27,31 +18,24 @@ void Counter::set(const std::string& key, int value) {
 }
 
 void Counter::inc(const std::string& key, int delta) {
-    ListNode* node = index.getNode(key);
-    if (node) {
-        list.update(key, node->value + delta);
-    } else {
-        list.add(key, delta);
-        index.add(key, list.getNode(key));
-    }
+    int value = get(key) + delta;
+    set(key, value);
 }
 
 void Counter::dec(const std::string& key, int delta) {
-    ListNode* node = index.getNode(key);
-    if (node) {
-        int newValue = node->value - delta;
-        if (newValue <= 0) {
-            list.remove(key);
-            index.remove(key);
-        } else {
-            list.update(key, newValue);
-        }
+    int value = get(key) - delta;
+    if (value > 0) {
+        set(key, value);
+    } else {
+        del(key);
     }
 }
 
 void Counter::del(const std::string& key) {
-    list.remove(key);
-    index.remove(key);
+    if (index.contains(key)) {
+        list.remove(key);
+        index.remove(key);
+    }
 }
 
 int Counter::count() const {

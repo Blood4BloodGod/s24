@@ -1,13 +1,10 @@
 #include "List.h"
 
-List::List() : head(nullptr), tail(nullptr), count(0), totalCount(0) {
-    // Constructor
-}
+List::List() : head(nullptr), tail(nullptr), count(0), totalCount(0) {}
 
 List::~List() {
-    // Destructor
     ListNode* current = head;
-    while (current) {
+    while (current != nullptr) {
         ListNode* next = current->next;
         delete current;
         current = next;
@@ -16,12 +13,12 @@ List::~List() {
 
 void List::add(const std::string& key, int value) {
     ListNode* newNode = new ListNode(key, value);
-    if (!head) {
-        head = tail = newNode;
-    } else {
+    if (tail) {
         tail->next = newNode;
         newNode->prev = tail;
         tail = newNode;
+    } else {
+        head = tail = newNode;
     }
     count++;
     totalCount += value;
@@ -30,27 +27,26 @@ void List::add(const std::string& key, int value) {
 void List::update(const std::string& key, int value) {
     ListNode* node = getNode(key);
     if (node) {
-        totalCount += value - node->value;
+        totalCount -= node->value;
         node->value = value;
+        totalCount += value;
     }
 }
 
 void List::remove(const std::string& key) {
     ListNode* node = getNode(key);
     if (node) {
-        totalCount -= node->value;
-        if (node == head) {
-            head = node->next;
-        }
-        if (node == tail) {
-            tail = node->prev;
-        }
         if (node->prev) {
             node->prev->next = node->next;
+        } else {
+            head = node->next;
         }
         if (node->next) {
             node->next->prev = node->prev;
+        } else {
+            tail = node->prev;
         }
+        totalCount -= node->value;
         delete node;
         count--;
     }

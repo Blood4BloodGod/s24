@@ -13,8 +13,10 @@ public:
     int get(const std::string& key) const;
     ListNode* getNode(const std::string& key) const;
 
+    void printDistribution() const;  // Debugging function
+
 private:
-    static const int TABLE_SIZE = 400000;  // Increased table size to reduce collisions
+    static const int TABLE_SIZE = 8192;
     struct HashNode {
         std::string key;
         ListNode* node;
@@ -25,4 +27,5 @@ private:
     HashNode* table[TABLE_SIZE];
 
     int hash(const std::string& key) const;
+    void clearTable();
 };

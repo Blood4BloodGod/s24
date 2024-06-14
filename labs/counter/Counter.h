@@ -36,4 +36,3 @@ private:
     List list;
     Index index;
 };
-

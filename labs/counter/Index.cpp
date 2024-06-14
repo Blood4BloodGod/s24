@@ -1,20 +1,36 @@
 #include "Index.h"
+#include <cstring>
+#include <iostream>
+
+// FNV-1a Hash function
+uint32_t fnv1a_hash(const std::string& key) {
+    uint32_t hash = 2166136261u;
+    for (char c : key) {
+        hash ^= c;
+        hash *= 16777619u;
+    }
+    return hash;
+}
 
 Index::Index() {
-    // Initialize hash table
-    for (int i = 0; i < TABLE_SIZE; ++i) {
-        table[i] = nullptr;
-    }
+    std::memset(table, 0, sizeof(table));
 }
 
 Index::~Index() {
-    // Clean up hash table
+    clearTable();
+}
+
+int Index::hash(const std::string& key) const {
+    return fnv1a_hash(key) % TABLE_SIZE;
+}
+
+void Index::clearTable() {
     for (int i = 0; i < TABLE_SIZE; ++i) {
-        HashNode* current = table[i];
-        while (current) {
-            HashNode* next = current->next;
-            delete current;
-            current = next;
+        HashNode* node = table[i];
+        while (node) {
+            HashNode* temp = node;
+            node = node->next;
+            delete temp;
         }
     }
 }
@@ -22,84 +38,62 @@ Index::~Index() {
 void Index::add(const std::string& key, ListNode* node) {
     int index = hash(key);
     HashNode* newNode = new HashNode(key, node);
-
-    if (table[index] == nullptr) {
-        table[index] = newNode;
-    } else {
-        HashNode* current = table[index];
-        while (current->next) {
-            current = current->next;
-        }
-        current->next = newNode;
-    }
+    newNode->next = table[index];
+    table[index] = newNode;
 }
 
 void Index::remove(const std::string& key) {
     int index = hash(key);
-    HashNode* current = table[index];
+    HashNode* node = table[index];
     HashNode* prev = nullptr;
 
-    while (current) {
-        if (current->key == key) {
-            if (prev) {
-                prev->next = current->next;
-            } else {
-                table[index] = current->next;
-            }
-            delete current;
-            return;
+    while (node && node->key != key) {
+        prev = node;
+        node = node->next;
+    }
+
+    if (node) {
+        if (prev) {
+            prev->next = node->next;
+        } else {
+            table[index] = node->next;
         }
-        prev = current;
-        current = current->next;
+        delete node;
     }
 }
 
 bool Index::contains(const std::string& key) const {
     int index = hash(key);
-    HashNode* current = table[index];
-
-    while (current) {
-        if (current->key == key) {
+    HashNode* node = table[index];
+    while (node) {
+        if (node->key == key) {
             return true;
         }
-        current = current->next;
+        node = node->next;
     }
-
     return false;
 }
 
 int Index::get(const std::string& key) const {
     int index = hash(key);
-    HashNode* current = table[index];
-
-    while (current) {
-        if (current->key == key) {
-            return current->node->value;
+    HashNode* node = table[index];
+    while (node) {
+        if (node->key == key) {
+            return node->node->value;
         }
-        current = current->next;
+        node = node->next;
     }
-
-    return 0; // Key not found
+    return 0;
 }
 
 ListNode* Index::getNode(const std::string& key) const {
     int index = hash(key);
-    HashNode* current = table[index];
-
-    while (current) {
-        if (current->key == key) {
-            return current->node;
+    HashNode* node = table[index];
+    while (node) {
+        if (node->key == key) {
+            return node->node;
         }
-        current = current->next;
+        node = node->next;
     }
-
-    return nullptr; // Key not found
-}
-
-int Index::hash(const std::string& key) const {
-    unsigned long hashValue = 5381;
-    for (char c : key) {
-        hashValue = ((hashValue << 5) + hashValue) + c; /* hash * 33 + c */
-    }
-    return hashValue % TABLE_SIZE;
+    return nullptr;
 }

@@ -31,4 +31,3 @@ private:
     int count;
     int totalCount;
 };
-
