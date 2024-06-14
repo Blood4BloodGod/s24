@@ -39,9 +39,11 @@ void Counter::inc(const std::string& key, int delta) {
 void Counter::dec(const std::string& key, int delta) {
     ListNode* node = index.getNode(key);
     if (node) {
-        list.update(key, node->value - delta);
-        if (node->value <= 0) {
+        int newValue = node->value - delta;
+        if (newValue <= 0) {
             del(key);
+        } else {
+            list.update(key, newValue);
         }
     }
 }
