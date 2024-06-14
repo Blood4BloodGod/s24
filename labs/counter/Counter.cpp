@@ -41,7 +41,8 @@ void Counter::dec(const std::string& key, int delta) {
     if (node) {
         int newValue = node->value - delta;
         if (newValue <= 0) {
-            del(key);
+            list.remove(key);
+            index.remove(key);
         } else {
             list.update(key, newValue);
         }
