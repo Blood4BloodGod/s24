@@ -1,16 +1,25 @@
 #include "Counter.h"
 
-Counter::Counter() : list(), index() {}
+Counter::Counter() : list(), index() {
+    // Constructor
+}
 
-Counter::~Counter() {}
+Counter::~Counter() {
+    // Destructor
+}
 
 int Counter::get(const std::string& key) const {
-    return index.get(key);
+    ListNode* node = index.getNode(key);
+    if (node) {
+        return node->value;
+    }
+    return 0; // Key not found
 }
 
 void Counter::set(const std::string& key, int value) {
-    if (index.contains(key)) {
-        list.update(key, value);
+    ListNode* node = index.getNode(key);
+    if (node) {
+        node->value = value;
     } else {
         list.add(key, value);
         index.add(key, list.getNode(key));
@@ -18,18 +27,28 @@ void Counter::set(const std::string& key, int value) {
 }
 
 void Counter::inc(const std::string& key, int delta) {
-    set(key, get(key) + delta);
+    ListNode* node = index.getNode(key);
+    if (node) {
+        node->value += delta;
+    } else {
+        list.add(key, delta);
+        index.add(key, list.getNode(key));
+    }
 }
 
 void Counter::dec(const std::string& key, int delta) {
-    set(key, get(key) - delta);
+    ListNode* node = index.getNode(key);
+    if (node) {
+        node->value -= delta;
+        if (node->value <= 0) {
+            del(key);
+        }
+    }
 }
 
 void Counter::del(const std::string& key) {
-    if (index.contains(key)) {
-        list.remove(key);
-        index.remove(key);
-    }
+    list.remove(key);
+    index.remove(key);
 }
 
 int Counter::count() const {
@@ -45,5 +64,5 @@ Counter::Iterator Counter::begin() const {
 }
 
 Counter::Iterator Counter::end() const {
-    return Iterator(list.end());
+    return Iterator(nullptr);
 }
