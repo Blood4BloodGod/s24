@@ -19,7 +19,7 @@ int Counter::get(const std::string& key) const {
 void Counter::set(const std::string& key, int value) {
     ListNode* node = index.getNode(key);
     if (node) {
-        node->value = value;
+        list.update(key, value);
     } else {
         list.add(key, value);
         index.add(key, list.getNode(key));
@@ -29,7 +29,7 @@ void Counter::set(const std::string& key, int value) {
 void Counter::inc(const std::string& key, int delta) {
     ListNode* node = index.getNode(key);
     if (node) {
-        node->value += delta;
+        list.update(key, node->value + delta);
     } else {
         list.add(key, delta);
         index.add(key, list.getNode(key));
@@ -39,7 +39,7 @@ void Counter::inc(const std::string& key, int delta) {
 void Counter::dec(const std::string& key, int delta) {
     ListNode* node = index.getNode(key);
     if (node) {
-        node->value -= delta;
+        list.update(key, node->value - delta);
         if (node->value <= 0) {
             del(key);
         }
